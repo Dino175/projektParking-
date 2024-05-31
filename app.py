@@ -57,5 +57,53 @@ def parkirna_mjesta():
     conn.close()
     return render_template('parkirna_mjesta.html', parkirna_mjesta=parkirna_mjesta)
 
+@app.route('/vozila/edit/<string:RegistarskaOznaka>', methods=['GET', 'POST'])
+def edit_vozilo(RegistarskaOznaka):
+    conn = get_db_connection()
+    vozilo = conn.execute('SELECT * FROM Vozilo WHERE RegistarskaOznaka = ?', (RegistarskaOznaka,)).fetchone()
+    conn.close()
+    if request.method == 'POST':
+        
+        marka = request.form['Marka']
+        model = request.form['Model']
+        boja = request.form['Boja']
+        godina_proizvodnje = request.form['GodinaProizvodnje']
+
+        
+        conn = get_db_connection()
+        conn.execute('UPDATE Vozilo SET Marka = ?, Model = ?, Boja = ?, GodinaProizvodnje = ? WHERE RegistarskaOznaka = ?',
+                     (marka, model, boja, godina_proizvodnje, RegistarskaOznaka))
+        conn.commit()
+        conn.close()
+
+        
+        return redirect(url_for('index'))
+
+    
+    return render_template('edit_vozilo.html', vozilo=vozilo)
+
+@app.route('/parkirna_mjesta/edit/<string:IdentifikatorMjesta>', methods=['GET', 'POST'])
+def edit_parkirno_mjesto(IdentifikatorMjesta):
+    conn = get_db_connection()
+    mjesto = conn.execute('SELECT * FROM ParkirnoMjesto WHERE IdentifikatorMjesta = ?', (IdentifikatorMjesta,)).fetchone()
+    conn.close()
+    if request.method == 'POST':
+        
+        status = request.form['Status']
+        vrijeme_parkiranja = request.form['VrijemeParkiranja']
+
+      
+        conn = get_db_connection()
+        conn.execute('UPDATE ParkirnoMjesto SET Status = ?, VrijemeParkiranja = ? WHERE IdentifikatorMjesta = ?',
+                     (status, vrijeme_parkiranja, IdentifikatorMjesta))
+        conn.commit()
+        conn.close()
+
+        
+        return redirect(url_for('index'))
+
+    
+    return render_template('edit_parkirno_mjesto.html', mjesto=mjesto)
+
 if __name__ == "__main__":
     app.run(debug=True)
