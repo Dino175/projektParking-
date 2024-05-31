@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
 DATABASE = 'database.sqlite'
@@ -31,7 +32,7 @@ def vozila():
                      (registarska_oznaka, marka, model, boja, godina_proizvodnje))
         conn.commit()
         conn.close()
-        return redirect(url_for('vozila'))
+        return redirect(url_for('parkirna_mjesta'))  # Redirect to parking spots after adding a vehicle
 
     conn = get_db_connection()
     vozila = conn.execute('SELECT * FROM Vozilo').fetchall()
@@ -63,47 +64,37 @@ def edit_vozilo(RegistarskaOznaka):
     vozilo = conn.execute('SELECT * FROM Vozilo WHERE RegistarskaOznaka = ?', (RegistarskaOznaka,)).fetchone()
     conn.close()
     if request.method == 'POST':
-        
         marka = request.form['Marka']
         model = request.form['Model']
         boja = request.form['Boja']
         godina_proizvodnje = request.form['GodinaProizvodnje']
 
-        
         conn = get_db_connection()
         conn.execute('UPDATE Vozilo SET Marka = ?, Model = ?, Boja = ?, GodinaProizvodnje = ? WHERE RegistarskaOznaka = ?',
                      (marka, model, boja, godina_proizvodnje, RegistarskaOznaka))
         conn.commit()
         conn.close()
-
-        
         return redirect(url_for('index'))
 
-    
     return render_template('edit_vozilo.html', vozilo=vozilo)
 
-@app.route('/parkirna_mjesta/edit/<string:IdentifikatorMjesta>', methods=['GET', 'POST'])
-def edit_parkirno_mjesto(IdentifikatorMjesta):
+@app.route('/api/parkirna_mjesta')
+def get_parking_spots():
     conn = get_db_connection()
-    mjesto = conn.execute('SELECT * FROM ParkirnoMjesto WHERE IdentifikatorMjesta = ?', (IdentifikatorMjesta,)).fetchone()
+    parkirna_mjesta = conn.execute('SELECT * FROM ParkirnoMjesto').fetchall()
     conn.close()
-    if request.method == 'POST':
-        
-        status = request.form['Status']
-        vrijeme_parkiranja = request.form['VrijemeParkiranja']
-
-      
-        conn = get_db_connection()
-        conn.execute('UPDATE ParkirnoMjesto SET Status = ?, VrijemeParkiranja = ? WHERE IdentifikatorMjesta = ?',
-                     (status, vrijeme_parkiranja, IdentifikatorMjesta))
-        conn.commit()
-        conn.close()
-
-        
-        return redirect(url_for('index'))
-
     
-    return render_template('edit_parkirno_mjesto.html', mjesto=mjesto)
+    
+    current_time = datetime.now().time()
+    updated_spots = []
+    for mjesto in parkirna_mjesta:
+        vrijeme_parkiranja = datetime.strptime(mjesto['VrijemeParkiranja'], "%H.%M").time()
+        if current_time > vrijeme_parkiranja and mjesto['Status'] == 'zauzeto':
+            mjesto['Status'] = 'slobodno'
+        
+        updated_spots.append(dict(mjesto))
+    
+    return jsonify({'parkirna_mjesta': updated_spots})
 
 if __name__ == "__main__":
     app.run(debug=True)

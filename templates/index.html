@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h1>Welcome to Parking+</h1>
 <p>Use the navigation above to manage vehicles and parking spots.</p>
@@ -6,24 +7,33 @@
 <h2>Vehicles</h2>
 <ul>
     {% for vozilo in vozila %}
-        <li>{{ vozilo.RegistarskaOznaka }} - {{ vozilo.Marka }} {{ vozilo.Model }} - {{ vozilo.Boja }} - {{ vozilo.GodinaProizvodnje }}
-            <a href="{{ url_for('edit_vozilo', RegistarskaOznaka=vozilo.RegistarskaOznaka) }}">Edit</a>
-            <form action="/vozila/delete/{{ vozilo.RegistarskaOznaka }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-primary">Delete</button>
-            </form>
-        </li>
+        <li>{{ vozilo.RegistarskaOznaka }} - {{ vozilo.Marka }} {{ vozilo.Model }} - {{ vozilo.Boja }} - {{ vozilo.GodinaProizvodnje }}</li>
     {% endfor %}
 </ul>
 
 <h2>Parking Spots</h2>
-<ul>
+<ul id="parking-spots">
     {% for mjesto in parkirna_mjesta %}
-        <li>{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}
-            <a href="{{ url_for('edit_parkirno_mjesto', IdentifikatorMjesta=mjesto.IdentifikatorMjesta) }}">Edit</a>
-            <form action="/parkirna_mjesta/delete/{{ mjesto.IdentifikatorMjesta }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-primary">Delete</button>
-            </form>
-        </li>
+        <li id="spot-{{ mjesto.IdentifikatorMjesta }}">{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
     {% endfor %}
 </ul>
+
+<script>
+// refresh stranica
+function refreshParkingSpots() {
+    fetch('{{ url_for("get_parking_spots") }}')
+        .then(response => response.json())
+        .then(data => {
+            const spots = data.parkirna_mjesta;
+            spots.forEach(spot => {
+                const spotElement = document.getElementById(`spot-${spot.IdentifikatorMjesta}`);
+                if (spotElement) {
+                    spotElement.textContent = `${spot.IdentifikatorMjesta} - ${spot.Status} - ${spot.VrijemeParkiranja}`;
+                }
+            });
+        });
+}
+
+setInterval(refreshParkingSpots, 60000); // Refresh svaku min
+</script>
 {% endblock %}
