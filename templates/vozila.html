@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Vehicles</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="RegistarskaOznaka">Registration Number</label>
+        <input type="text" class="form-control" id="RegistarskaOznaka" name="RegistarskaOznaka" required>
+    </div>
+    <div class="form-group">
+        <label for="Marka">Brand</label>
+        <input type="text" class="form-control" id="Marka" name="Marka" required>
+    </div>
+    <div class="form-group">
+        <label for="Model">Model</label>
+        <input type="text" class="form-control" id="Model" name="Model" required>
+    </div>
+    <div class="form-group">
+        <label for="Boja">Color</label>
+        <input type="text" class="form-control" id="Boja" name="Boja">
+    </div>
+    <div class="form-group">
+        <label for="GodinaProizvodnje">Year of Manufacture</label>
+        <input type="number" class="form-control" id="GodinaProizvodnje" name="GodinaProizvodnje">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Vehicle</button>
+</form>
+{% endblock %}

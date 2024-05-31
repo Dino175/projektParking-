@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Parking Spots</h1>
+<form method="POST">
+    <div class="form-group">
+        <label for="IdentifikatorMjesta">Spot Identifier</label>
+        <input type="text" class="form-control" id="IdentifikatorMjesta" name="IdentifikatorMjesta" required>
+    </div>
+    <div class="form-group">
+        <label for="Status">Status</label>
+        <select class="form-control" id="Status" name="Status" required>
+            <option value="slobodno">Free</option>
+            <option value="zauzeto">Occupied</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="VrijemeParkiranja">Parking Time</label>
+        <input type="text" class="form-control" id="VrijemeParkiranja" name="VrijemeParkiranja">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Parking Spot</button>
+</form>
+{% endblock %}
