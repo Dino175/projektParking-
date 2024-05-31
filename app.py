@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import sqlite3
+import string
 from datetime import datetime
 
 app = Flask(__name__)
@@ -9,6 +10,13 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+def generate_parking_spots():
+    spots = []
+    for letter in string.ascii_lowercase[:6]: 
+        for number in range(1, 10): 
+            spots.append(f"{letter}{number}")
+    return spots
 
 @app.route('/')
 def index():
@@ -32,7 +40,7 @@ def vozila():
                      (registarska_oznaka, marka, model, boja, godina_proizvodnje))
         conn.commit()
         conn.close()
-        return redirect(url_for('parkirna_mjesta'))  # Redirect to parking spots after adding a vehicle
+        return redirect(url_for('parkirna_mjesta'))
 
     conn = get_db_connection()
     vozila = conn.execute('SELECT * FROM Vozilo').fetchall()
@@ -55,8 +63,9 @@ def parkirna_mjesta():
 
     conn = get_db_connection()
     parkirna_mjesta = conn.execute('SELECT * FROM ParkirnoMjesto').fetchall()
+    spots = generate_parking_spots()
     conn.close()
-    return render_template('parkirna_mjesta.html', parkirna_mjesta=parkirna_mjesta)
+    return render_template('parkirna_mjesta.html', parkirna_mjesta=parkirna_mjesta, spots=spots)
 
 @app.route('/vozila/edit/<string:RegistarskaOznaka>', methods=['GET', 'POST'])
 def edit_vozilo(RegistarskaOznaka):
@@ -83,7 +92,6 @@ def get_parking_spots():
     conn = get_db_connection()
     parkirna_mjesta = conn.execute('SELECT * FROM ParkirnoMjesto').fetchall()
     conn.close()
-    
     
     current_time = datetime.now().time()
     updated_spots = []

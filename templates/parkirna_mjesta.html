@@ -4,10 +4,14 @@
 <h2>Add a Parking Spot</h2>
 <form method="post">
     <label for="IdentifikatorMjesta">Spot Identifier:</label>
-    <input type="text" id="IdentifikatorMjesta" name="IdentifikatorMjesta" required><br>
+    <select id="IdentifikatorMjesta" name="IdentifikatorMjesta">
+        {% for spot in spots %}
+        <option value="{{ spot }}">{{ spot }}</option>
+        {% endfor %}
+    </select><br>
 
     <label for="Status">Status:</label>
-    <input type="text" id="Status" name="Status" required><br>
+    <input type="text" id="Status" name="Status" value="slobodno" required><br>
 
     <label for="VrijemeParkiranja">Parking Duration:</label>
     <select id="VrijemeParkiranja" name="VrijemeParkiranja">
@@ -15,7 +19,7 @@
         <option value="01.00">1 hour</option>
         <option value="02.00">2 hours</option>
         <option value="03.00">3 hours</option>
-
+        
     </select><br>
 
     <button type="submit">Add Parking Spot</button>
