@@ -1,34 +1,42 @@
 {% extends "base.html" %}
 
+{% block title %}Parking Spots - Parking+{% endblock %}
+
 {% block content %}
-<h2>Add a Parking Spot</h2>
-<form method="post">
-    <label for="IdentifikatorMjesta">Spot Identifier:</label>
-    <select id="IdentifikatorMjesta" name="IdentifikatorMjesta">
-        {% for spot in spots %}
-        <option value="{{ spot }}">{{ spot }}</option>
-        {% endfor %}
-    </select><br>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="mb-4">Add a Parking Spot</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="IdentifikatorMjesta">Spot Identifier</label>
+                <select class="form-control" id="IdentifikatorMjesta" name="IdentifikatorMjesta" required>
+                    {% for spot in spots %}
+                    <option value="{{ spot }}">{{ spot }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <input type="text" class="form-control" id="Status" name="Status" value="slobodno" required>
+            </div>
+            <div class="form-group">
+                <label for="VrijemeParkiranja">Parking Duration</label>
+                <select class="form-control" id="VrijemeParkiranja" name="VrijemeParkiranja">
+                    <option value="00.30">30 minutes</option>
+                    <option value="01.00">1 hour</option>
+                    <option value="02.00">2 hours</option>
+                    <option value="03.00">3 hours</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Parking Spot</button>
+        </form>
 
-    <label for="Status">Status:</label>
-    <input type="text" id="Status" name="Status" value="slobodno" required><br>
-
-    <label for="VrijemeParkiranja">Parking Duration:</label>
-    <select id="VrijemeParkiranja" name="VrijemeParkiranja">
-        <option value="00.30">30 minutes</option>
-        <option value="01.00">1 hour</option>
-        <option value="02.00">2 hours</option>
-        <option value="03.00">3 hours</option>
-        
-    </select><br>
-
-    <button type="submit">Add Parking Spot</button>
-</form>
-
-<h2>Parking Spots</h2>
-<ul>
-    {% for mjesto in parkirna_mjesta %}
-        <li>{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
-    {% endfor %}
-</ul>
+        <h2 class="mt-5">Parking Spots</h2>
+        <ul class="list-group">
+            {% for mjesto in parkirna_mjesta %}
+                <li class="list-group-item">{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

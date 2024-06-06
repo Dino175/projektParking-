@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Vehicle</title>
-</head>
-<body>
-    <h1>Edit Vehicle</h1>
-    <form method="POST">
-        <label for="Marka">Marka:</label>
-        <input type="text" id="Marka" name="Marka" value="{{ vozilo.Marka }}"><br>
-        <label for="Model">Model:</label>
-        <input type="text" id="Model" name="Model" value="{{ vozilo.Model }}"><br>
-        <label for="Boja">Boja:</label>
-        <input type="text" id="Boja" name="Boja" value="{{ vozilo.Boja }}"><br>
-        <label for="GodinaProizvodnje">Godina Proizvodnje:</label>
-        <input type="text" id="GodinaProizvodnje" name="GodinaProizvodnje" value="{{ vozilo.GodinaProizvodnje }}"><br>
-        <input type="submit" value="Save Changes">
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Edit Vehicle - Parking+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="mb-4">Edit Vehicle</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="Marka">Marka</label>
+                <input type="text" class="form-control" id="Marka" name="Marka" value="{{ vozilo.Marka }}" required>
+            </div>
+            <div class="form-group">
+                <label for="Model">Model</label>
+                <input type="text" class="form-control" id="Model" name="Model" value="{{ vozilo.Model }}" required>
+            </div>
+            <div class="form-group">
+                <label for="Boja">Boja</label>
+                <input type="text" class="form-control" id="Boja" name="Boja" value="{{ vozilo.Boja }}" required>
+            </div>
+            <div class="form-group">
+                <label for="GodinaProizvodnje">Godina Proizvodnje</label>
+                <input type="number" class="form-control" id="GodinaProizvodnje" name="GodinaProizvodnje" value="{{ vozilo.GodinaProizvodnje }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

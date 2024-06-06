@@ -1,25 +1,30 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h1>Welcome to Parking+</h1>
-<p>Use the navigation above to manage vehicles and parking spots.</p>
+{% block title %}Home - Parking+{% endblock %}
 
-<h2>Vehicles</h2>
-<ul>
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Parking+</h1>
+    <p class="lead">Manage your vehicles and parking spots with ease.</p>
+    <hr class="my-4">
+    <p>Use the navigation above to get started.</p>
+</div>
+
+<h2 class="mb-4">Vehicles</h2>
+<ul class="list-group mb-5">
     {% for vozilo in vozila %}
-        <li>{{ vozilo.RegistarskaOznaka }} - {{ vozilo.Marka }} {{ vozilo.Model }} - {{ vozilo.Boja }} - {{ vozilo.GodinaProizvodnje }}</li>
+        <li class="list-group-item">{{ vozilo.RegistarskaOznaka }} - {{ vozilo.Marka }} {{ vozilo.Model }} - {{ vozilo.Boja }} - {{ vozilo.GodinaProizvodnje }}</li>
     {% endfor %}
 </ul>
 
-<h2>Parking Spots</h2>
-<ul id="parking-spots">
+<h2 class="mb-4">Parking Spots</h2>
+<ul class="list-group" id="parking-spots">
     {% for mjesto in parkirna_mjesta %}
-        <li id="spot-{{ mjesto.IdentifikatorMjesta }}">{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
+        <li class="list-group-item" id="spot-{{ mjesto.IdentifikatorMjesta }}">{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
     {% endfor %}
 </ul>
 
 <script>
-// refresh stranica
 function refreshParkingSpots() {
     fetch('{{ url_for("get_parking_spots") }}')
         .then(response => response.json())
@@ -34,6 +39,6 @@ function refreshParkingSpots() {
         });
 }
 
-setInterval(refreshParkingSpots, 60000); // Refresh svaku min
+setInterval(refreshParkingSpots, 60000);
 </script>
 {% endblock %}

@@ -105,4 +105,5 @@ def get_parking_spots():
     return jsonify({'parkirna_mjesta': updated_spots})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
+
