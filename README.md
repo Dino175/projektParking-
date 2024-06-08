@@ -7,7 +7,7 @@ Parking+ Projekt će implementirati web servis za upravljanje parkiralištem voz
 
 
 -Klasa: ParkirnoMjesto
--Entiteti: IdentifikatorMjesdta, Status, VrijemeParkiranja (Vrijeme kada je vozilo parkirano, null ako je mjesto slobodno)
+-Entiteti: IdentifikatorMjesdta, Status, VrijemeParkiranja (Vrijeme kada je vozilo parkirano, false ako je mjesto slobodno)
 
 ## INSTALACIJA PROJEKTA NA LOKALNO RAČUNALO
 ## Priprema okruženja
