@@ -41,12 +41,15 @@ Parking+ Projekt će implementirati web servis za upravljanje parkiralištem voz
      ```sh
      pip install flask
      ``
+     ```sh
+      pip install -r requirements.txt
+     ``
 
 
 3. **Izgradite Docker sliku:**
    - U terminalu, pokrenite naredbu:
      ```sh
-     docker compose-up
+     docker-compose up
      ```
 
 4. **Pokrenite Docker container:**
