@@ -3,40 +3,44 @@
 {% block title %}Parking Spots - Parking+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2 class="mb-4">Add a Parking Spot</h2>
-        <form method="post">
-            <div class="form-group">
-                <label for="IdentifikatorMjesta">Spot Identifier</label>
-                <select class="form-control" id="IdentifikatorMjesta" name="IdentifikatorMjesta" required>
-                    {% for spot in spots %}
-                    <option value="{{ spot }}">{{ spot }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="Status">Status</label>
-                <input type="text" class="form-control" id="Status" name="Status" value="slobodno" required>
-            </div>
-            <div class="form-group">
-                <label for="VrijemeParkiranja">Parking Duration</label>
-                <select class="form-control" id="VrijemeParkiranja" name="VrijemeParkiranja">
-                    <option value="00.30">30 minutes</option>
-                    <option value="01.00">1 hour</option>
-                    <option value="02.00">2 hours</option>
-                    <option value="03.00">3 hours</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Parking Spot</button>
-        </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Add a Parking Spot</h2>
 
-        <h2 class="mt-5">Parking Spots</h2>
-        <ul class="list-group">
-            {% for mjesto in parkirna_mjesta %}
-                <li class="list-group-item">{{ mjesto.IdentifikatorMjesta }} - {{ mjesto.Status }} - {{ mjesto.VrijemeParkiranja }}</li>
-            {% endfor %}
-        </ul>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                  {% for message in messages %}
+                    <p>{{ message }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form method="post">
+                <div class="form-group">
+                    <label for="IdentifikatorMjesta">Spot Identifier</label>
+                    <select class="form-control" id="IdentifikatorMjesta" name="IdentifikatorMjesta" required>
+                        {% for spot in spots %}
+                            <option value="{{ spot }}">{{ spot }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Status">Status</label>
+                    <select class="form-control" id="Status" name="Status" required>
+                        <option value="slobodno">Free</option>
+                        <option value="zauzeto">Occupied</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="VrijemeParkiranja">Parking Time (HH:MM)</label>
+                    <input type="text" class="form-control" id="VrijemeParkiranja" name="VrijemeParkiranja" placeholder="HH:MM" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

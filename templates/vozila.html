@@ -6,6 +6,17 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2 class="mb-4">Add a Vehicle</h2>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-danger" role="alert">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
         <form method="post">
             <div class="form-group">
                 <label for="RegistarskaOznaka">Registration Number</label>
@@ -27,5 +38,8 @@
                 <label for="GodinaProizvodnje">Year of Production</label>
                 <input type="number" class="form-control" id="GodinaProizvodnje" name="GodinaProizvodnje" required>
             </div>
-            
-                {% endblock %}
+            <button type="submit" class="btn btn-primary">Unesi</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

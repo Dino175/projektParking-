@@ -3,11 +3,13 @@
 {% block title %}Home - Parking+{% endblock %}
 
 {% block content %}
+
 <div class="jumbotron">
     <h1 class="display-4">Welcome to Parking+</h1>
     <p class="lead">Manage your vehicles and parking spots with ease.</p>
     <hr class="my-4">
     <p>Use the navigation above to get started.</p>
+    <button onclick="window.location.href='{{ url_for('vozila') }}'" class="btn btn-primary btn-lg">Zauzmi mjesto</button>
 </div>
 
 <h2 class="mb-4">Vehicles</h2>
@@ -39,6 +41,7 @@ function refreshParkingSpots() {
         });
 }
 
-setInterval(refreshParkingSpots, 60000);
+setInterval(refreshParkingSpots, 60000)
 </script>
+
 {% endblock %}

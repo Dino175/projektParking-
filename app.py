@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 import sqlite3
 import string
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'supersecretkey'
 DATABASE = 'database.sqlite'
 
 def get_db_connection():
@@ -12,10 +13,16 @@ def get_db_connection():
     return conn
 
 def generate_parking_spots():
+    conn = get_db_connection()
+    zauzeta_mjesta = [mjesto['IdentifikatorMjesta'] for mjesto in conn.execute('SELECT IdentifikatorMjesta FROM ParkirnoMjesto WHERE Status = "zauzeto"').fetchall()]
+    conn.close()
+    
     spots = []
-    for letter in string.ascii_lowercase[:6]: 
-        for number in range(1, 10): 
-            spots.append(f"{letter}{number}")
+    for letter in string.ascii_lowercase[:6]:
+        for number in range(1, 10):
+            spot = f"{letter}{number}"
+            if spot not in zauzeta_mjesta:
+                spots.append(spot)
     return spots
 
 @app.route('/')
@@ -36,6 +43,13 @@ def vozila():
         godina_proizvodnje = request.form['GodinaProizvodnje']
 
         conn = get_db_connection()
+        vozilo = conn.execute('SELECT * FROM Vozilo WHERE RegistarskaOznaka = ?', (registarska_oznaka,)).fetchone()
+        
+        if vozilo is not None:
+            conn.close()
+            flash('Vozilo s istom registarskom oznakom već postoji!')
+            return redirect(url_for('vozila'))
+
         conn.execute('INSERT INTO Vozilo (RegistarskaOznaka, Marka, Model, Boja, GodinaProizvodnje) VALUES (?, ?, ?, ?, ?)',
                      (registarska_oznaka, marka, model, boja, godina_proizvodnje))
         conn.commit()
@@ -55,15 +69,23 @@ def parkirna_mjesta():
         vrijeme_parkiranja = request.form['VrijemeParkiranja']
 
         conn = get_db_connection()
+        existing_spot = conn.execute('SELECT * FROM ParkirnoMjesto WHERE IdentifikatorMjesta = ?', (identifikator_mjesta,)).fetchone()
+        conn.close()
+
+        if existing_spot:
+            flash('This parking spot is already taken.')
+            return redirect(url_for('parkirna_mjesta'))
+
+        conn = get_db_connection()
         conn.execute('INSERT INTO ParkirnoMjesto (IdentifikatorMjesta, Status, VrijemeParkiranja) VALUES (?, ?, ?)',
                      (identifikator_mjesta, status, vrijeme_parkiranja))
         conn.commit()
         conn.close()
-        return redirect(url_for('parkirna_mjesta'))
+        return redirect(url_for('index'))
 
+    spots = generate_parking_spots()
     conn = get_db_connection()
     parkirna_mjesta = conn.execute('SELECT * FROM ParkirnoMjesto').fetchall()
-    spots = generate_parking_spots()
     conn.close()
     return render_template('parkirna_mjesta.html', parkirna_mjesta=parkirna_mjesta, spots=spots)
 
@@ -104,6 +126,10 @@ def get_parking_spots():
     
     return jsonify({'parkirna_mjesta': updated_spots})
 
+@app.route('/api/slobodna_mjesta')
+def api_slobodna_mjesta():
+    spots = generate_parking_spots()
+    return jsonify({'slobodna_mjesta': spots})
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
-
